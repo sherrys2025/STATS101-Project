@@ -1,14 +1,14 @@
 ---
 title: "STATS 101 Project"
-author: "Sherry, Lisa, Selina"
+author: "Sherry Shen, Lisa Zhong, Selina Zhang"
 output:
   pdf_document:
     extra_dependencies: bbm
   html_document:
     df_print: paged
----
 
 ```{r}
 print("hello world :)")
 ```
+
 
