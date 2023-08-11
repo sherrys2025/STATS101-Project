@@ -8,7 +8,7 @@ output:
     df_print: paged
 
 ```{r}
-print("Hello world :)")
+print("Hello World :)")
 ```
 
 
