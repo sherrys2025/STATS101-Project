@@ -1,0 +1,10 @@
+---
+title: "STATS 101 Project"
+author: "Sherry, Lisa, Selina"
+output:
+  pdf_document:
+    extra_dependencies: bbm
+  html_document:
+    df_print: paged
+---
+
