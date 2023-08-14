@@ -2,13 +2,20 @@
 title: "STATS 101 Project"
 author: "Sherry Shen, Lisa Zhong, Selina Zhang"
 output:
-  pdf_document:
-    extra_dependencies: bbm
-  html_document:
-    df_print: paged
-
-```{r}
-print("Hello World >:(")
+  pdf_document: default
+---
+```{r setup, include=FALSE}
+set.seed(123)     #setting seed
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 ```
+
+## Splitting Data
 ```{r}
-print("gonna off campus tomorrow, I'll try to make it after dinner. ")
+data <- read.csv("ames2000_NAfix.csv")
+data$MS.SubClass = factor(data$MS.SubClass)
+data$MS.Zoning = factor(data$MS.Zoning)
+data$Street = factor(data$Street)
+data$Alley = factor(data$Alley)
+data$Lot.Shape = factor(data$Lot.Shape)
+```
+
