@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 print("trial")
 ```
 
-## Splitting the data
+##Splitting the data
 ```{r}
 data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = TRUE)
 data <- data[,-9] #removing utilities because it only has one type of value
@@ -34,9 +34,7 @@ testData <- data[-train_Index, ]
 
 ##A bit of pre-processing
 ```{r}
-head(data)
-dim(data)
-summary(data)
+data = replace(data,is.na(data),0)
 
 ```
 
@@ -44,16 +42,19 @@ summary(data)
 ##Conducting PCA on the continuous variables
 ```{r}
 library("factoextra")
+library("dplyr")
+contData <- trainData %>%
+        select(where(is.numeric))
 
-dataM = as.matrix(data)
-dataMat = as.matrix(data) %*% t(dataM)
+str(contData)
+dataM = as.matrix(contData)
+dataMat = as.matrix(dataM) %*% t(dataM)
 ## standardizing the data
 dataMat = scale(dataMat)
 mean(dataMat[, 1])
-sd(dataMat[, 1])
+sd(dataMat[, 1]) #checking to make sure it's standardized
 pca_data = princomp(dataMat)
-#summary(pca_x)
-pca_data$loadings[, 1:2]
+#summary(pca_data)
 fviz_eig(pca_data, addlabels = TRUE)
 plot(pca_data$loadings[, 1],
      pca_data$loadings[, 2], 
