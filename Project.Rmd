@@ -11,10 +11,51 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 print("trial")
 ```
 
-##Splitting the data
+##A bit of data pre-processing/making catergorical into numerical
 ```{r}
+#catData <- data %>%
+#        select(!where(is.numeric))
 data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = TRUE)
 data <- data[,-9] #removing utilities because it only has one type of value
+
+
+#replacing na to 0
+for (i in 1:10) {
+    for (j in 1:ncol(data)) {
+        if(is.na(data[i,j]) || data[i,j]=="None"){
+         data[i,j] <- 0 
+        }
+        }
+}
+
+
+##replace 10 with nrow(data)
+#converting categorical to numerical values
+uniqueVals = list()
+for (j in 1:ncol(data)) {
+  if(!is.numeric(data[,j])){
+    vars = unique(data[,j])
+    uniqueVals[[j]] = vars
+    
+    for (i in 1:10) {
+      for(w in 1:length(uniqueVals[[j]])) {
+        if(is.na(data[i,j])){
+         data[i,j] <- 0 
+        }
+        if(data[i,j]==vars[w]){
+          data[i,j]<- w
+          break
+        }
+      }
+    }
+  }
+}
+
+```
+
+
+##Splitting the data
+```{r}
 
 smp_size = floor(0.5 * nrow(data))
 train_Index = sample(seq_len(nrow(data)), size = smp_size)
@@ -30,12 +71,6 @@ testData <- data[-train_Index, ]
 # data$Exter.Cond = factor(data$Exter.Cond, ordered = T)
 # data$Bsmt.Qual = factor(data$Bsmt.Qual, ordered = T)
 # data$Bsmt.Cond = factor(data$Bsmt.Cond, ordered = T)
-```
-
-##A bit of pre-processing
-```{r}
-data = replace(data,is.na(data),0)
-
 ```
 
 
