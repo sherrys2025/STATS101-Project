@@ -11,13 +11,38 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 print("trial")
 ```
 
-##Conducting PCA
+## Splitting the data
 ```{r}
 data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = TRUE)
+data <- data[,-9] #removing utilities because it only has one type of value
 
-unique(data$Utilities) 
-data <- data[,-9]
+smp_size = floor(0.5 * nrow(data))
+train_Index = sample(seq_len(nrow(data)), size = smp_size)
+trainData <- data[train_Index, ]
+testData <- data[-train_Index, ] 
 
+# data$Lot.Shape = factor(data$Lot.Shape, ordered = T) # ordinal
+# data$Utilities = factor(data$Utilities, ordered = T)
+# data$Land.Slope = factor(data$Land.Slope, ordered = T)
+# data$Overall.Qual = factor(data$Overall.Qual, ordered = T)
+# data$Overall.Cond = factor(data$Overall.Cond, ordered = T)
+# data$Exter.Qual = factor(data$Exter.Qual, ordered = T)
+# data$Exter.Cond = factor(data$Exter.Cond, ordered = T)
+# data$Bsmt.Qual = factor(data$Bsmt.Qual, ordered = T)
+# data$Bsmt.Cond = factor(data$Bsmt.Cond, ordered = T)
+```
+
+##A bit of pre-processing
+```{r}
+head(data)
+dim(data)
+summary(data)
+
+```
+
+
+##Conducting PCA on the continuous variables
+```{r}
 library("factoextra")
 
 dataM = as.matrix(data)
@@ -35,46 +60,9 @@ plot(pca_data$loadings[, 1],
      xlab='loadings 1', 
      ylab='loadings 2',
      main='PCA on data')
-
-
 ```
 
 
-## Splitting Data
-
-```{r}
-
-smp_size = floor(0.5 * nrow(data))
-
-train_Index = sample(seq_len(nrow(data)), size = smp_size)
-trainData <- data[train_Index, ] # removing Utilities
-testData <- data[-train_Index, ] # removing Utilities
-
-# data$Lot.Shape = factor(data$Lot.Shape, ordered = T) # ordinal
-# data$Utilities = factor(data$Utilities, ordered = T)
-# data$Land.Slope = factor(data$Land.Slope, ordered = T)
-# data$Overall.Qual = factor(data$Overall.Qual, ordered = T)
-# data$Overall.Cond = factor(data$Overall.Cond, ordered = T)
-# data$Exter.Qual = factor(data$Exter.Qual, ordered = T)
-# data$Exter.Cond = factor(data$Exter.Cond, ordered = T)
-# data$Bsmt.Qual = factor(data$Bsmt.Qual, ordered = T)
-# data$Bsmt.Cond = factor(data$Bsmt.Cond, ordered = T)
-```
-
-## The Study
-
-```{r}
-head(data)
-dim(data)
-summary(data)
-
-```
-
-**What field does the data come from?** The data came from American Statistical Association, specifically from Ames, Iowa Assessor's Office. It describes different features for "individual residential properties sold in Ames, IA from 2006 to 2010" (Stanford).
-
-**What are the goals of the study? Are there any effects of particular interest?** Our population of interest is the individual real estates sold in Ames. The Population Parameter is the sale price of the real estates. 
-
-**How might these goals be answered, i.e. tests / confidence intervals?**
 
 ## The Data
 ```{r}
