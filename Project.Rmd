@@ -11,18 +11,44 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 print("trial")
 ```
 
-## Splitting Data
-
+##Conducting PCA
 ```{r}
 data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = TRUE)
 
 unique(data$Utilities) 
+data <- data[,-9]
+
+library("factoextra")
+
+dataM = as.matrix(data)
+dataMat = as.matrix(data) %*% t(dataM)
+## standardizing the data
+dataMat = scale(dataMat)
+mean(dataMat[, 1])
+sd(dataMat[, 1])
+pca_data = princomp(dataMat)
+#summary(pca_x)
+pca_data$loadings[, 1:2]
+fviz_eig(pca_data, addlabels = TRUE)
+plot(pca_data$loadings[, 1],
+     pca_data$loadings[, 2], 
+     xlab='loadings 1', 
+     ylab='loadings 2',
+     main='PCA on data')
+
+
+```
+
+
+## Splitting Data
+
+```{r}
 
 smp_size = floor(0.5 * nrow(data))
 
 train_Index = sample(seq_len(nrow(data)), size = smp_size)
-trainData <- data[train_Index, -9] # removing Utilities
-testData <- data[-train_Index, -9] # removing Utilities
+trainData <- data[train_Index, ] # removing Utilities
+testData <- data[-train_Index, ] # removing Utilities
 
 # data$Lot.Shape = factor(data$Lot.Shape, ordered = T) # ordinal
 # data$Utilities = factor(data$Utilities, ordered = T)
