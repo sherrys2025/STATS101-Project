@@ -4,57 +4,53 @@ author: "Sherry Shen, Lisa Zhong, Selina Zhang"
 output:
   pdf_document: default
 ---
+
 ```{r setup, include=FALSE}
 set.seed(123)     #setting seed
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
+print("trial")
 ```
 
 ## Splitting Data
+
 ```{r}
-data <- read.csv("ames2000_NAfix.csv")
+data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = TRUE)
+
+unique(data$Utilities) 
+
 smp_size = floor(0.5 * nrow(data))
 
 train_Index = sample(seq_len(nrow(data)), size = smp_size)
-trainData <- data[train_Index,]
-testData <- data[-train_Index,]
+trainData <- data[train_Index, -9] # removing Utilities
+testData <- data[-train_Index, -9] # removing Utilities
 
-# data$MS.SubClass = factor(data$MS.SubClass)
-# data$MS.Zoning = factor(data$MS.Zoning)
-# data$Street = factor(data$Street)
-# data$Alley = factor(data$Alley)
 # data$Lot.Shape = factor(data$Lot.Shape, ordered = T) # ordinal
-# data$Land.Contour = factor(data$Land.Contour) 
 # data$Utilities = factor(data$Utilities, ordered = T)
-# data$Lot.Config = factor(data$Lot.Config)
 # data$Land.Slope = factor(data$Land.Slope, ordered = T)
-# data$Neighborhood = factor(data$Neighborhood)
-# data$Condition.1 = factor(data$Condition.1)
-# data$Condition.2 = factor(data$Condition.2)
-# data$Bldg.Type = factor(data$Bldg.Type)
-# data$House.Style = factor(data$House.Style)
 # data$Overall.Qual = factor(data$Overall.Qual, ordered = T)
 # data$Overall.Cond = factor(data$Overall.Cond, ordered = T)
-# data$Roof.Style = factor(data$Roof.Style)
-# data$Roof.Matl = factor(data$Roof.Matl)
-# data$Exterior.1st = factor(data$Exterior.1st)
-# data$Exterior.2nd = factor(data$Exterior.2nd)
-# data$Mas.Vnr.Type = factor(data$Mas.Vnr.Type)
-# data$Mas.Vnr.Area = as.numeric(data$Mas.Vnr.Area)
 # data$Exter.Qual = factor(data$Exter.Qual, ordered = T)
 # data$Exter.Cond = factor(data$Exter.Cond, ordered = T)
-# data$Foundation = factor(data$Foundation)
 # data$Bsmt.Qual = factor(data$Bsmt.Qual, ordered = T)
 # data$Bsmt.Cond = factor(data$Bsmt.Cond, ordered = T)
 ```
+
 ## The Study
+
 ```{r}
-nrow(data)
+head(data)
+dim(data)
+summary(data)
+
 ```
 
-What field does the data come from?
-The data came from American Statistical Association, specifically from Ames, Iowa Assessor’s Office. It describes different features for "individual residential properties sold in Ames, IA from 2006 to 2010" (Stanford).
+**What field does the data come from?** The data came from American Statistical Association, specifically from Ames, Iowa Assessor's Office. It describes different features for "individual residential properties sold in Ames, IA from 2006 to 2010" (Stanford).
 
-What are the goals of the study? Are there any effects of particular interest?
-Our population of interest is the individual real estates sold in Ames. The Population Parameter is the sale price of the real estates. 
+**What are the goals of the study? Are there any effects of particular interest?** Our population of interest is the individual real estates sold in Ames. The Population Parameter is the sale price of the real estates. 
 
-How might these goals be answered, i.e. tests / confidence intervals?
+**How might these goals be answered, i.e. tests / confidence intervals?**
+
+## The Data
+```{r}
+
+```
