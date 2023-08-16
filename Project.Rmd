@@ -11,49 +11,15 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 print("trial")
 ```
 
-```{r}
-#library(plyr)
-
-#?mapvalues
-
-```
-
-##A bit of data pre-processing + making catergorical into numerical
+##Data preprocessing
 ```{r}
 #catData <- data %>%
 #        select(!where(is.numeric))
-data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = FALSE)
+
+data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = TRUE)
 data <- data[,-9] #removing utilities because it only has one type of value
 data <- data[,-79] #removing the sales price too
 
-#replacing na to 0
-for (i in 1:10) {
-    for (j in 1:ncol(data)) {
-      data[data == "None"] <- 0
-        if(is.na(data[i,j]) || data[i,j]=="None"){
-        data[i,j] <- "0"
-        }
-      }
-}
-
-##replace 10 with nrow(data) later
-#converting categorical to numerical values
-uniqueVals = list()
-for (j in 1:ncol(data)) {
-  if(!is.numeric(data[,j])){
-    vars = unique(data[,j])
-    uniqueVals[[j]] = vars
-    
-    for (i in 1:10) {
-      for(w in 1:length(uniqueVals[[j]])) {
-        if(data[i,j]==vars[w]){
-          data[i,j]<- w
-          break
-        }
-      }
-    }
-  }
-}
 
 ```
 
@@ -65,41 +31,14 @@ smp_size = floor(0.5 * nrow(data))
 train_Index = sample(seq_len(nrow(data)), size = smp_size)
 trainData <- data[train_Index, ]
 testData <- data[-train_Index, ]  
-
-# data$Lot.Shape = factor(data$Lot.Shape, ordered = T) # ordinal
-# data$Utilities = factor(data$Utilities, ordered = T)
-# data$Land.Slope = factor(data$Land.Slope, ordered = T)
-# data$Overall.Qual = factor(data$Overall.Qual, ordered = T)
-# data$Overall.Cond = factor(data$Overall.Cond, ordered = T)
-# data$Exter.Qual = factor(data$Exter.Qual, ordered = T)
-# data$Exter.Cond = factor(data$Exter.Cond, ordered = T)
-# data$Bsmt.Qual = factor(data$Bsmt.Qual, ordered = T)
-# data$Bsmt.Cond = factor(data$Bsmt.Cond, ordered = T)
 ```
 
 
-##Conducting PCA on the continuous variables
+##Corrplot 
 ```{r}
-library("factoextra")
-library("dplyr")
 
-dataM = data.matrix(data[1:10,])
-dataMat = dataM %*% t(dataM)
-## standardizing the data
-dataMat = scale(dataMat)
-mean(dataMat[, 1])
-sd(dataMat[, 1]) #checking to make sure it's standardized
-pca_data = princomp(dataMat)
-#summary(pca_data)
-fviz_eig(pca_data, addlabels = TRUE)
-plot(pca_data$loadings[, 1],
-     pca_data$loadings[, 2], 
-     xlab='loadings 1', 
-     ylab='loadings 2',
-     main='PCA on data')
+
 ```
-
-
 
 ## The Data
 ```{r}
