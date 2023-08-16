@@ -11,25 +11,32 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 print("trial")
 ```
 
-##A bit of data pre-processing/making catergorical into numerical
+```{r}
+#library(plyr)
+
+#?mapvalues
+
+```
+
+##A bit of data pre-processing + making catergorical into numerical
 ```{r}
 #catData <- data %>%
 #        select(!where(is.numeric))
-data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = TRUE)
+data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = FALSE)
 data <- data[,-9] #removing utilities because it only has one type of value
-
+data <- data[,-79] #removing the sales price too
 
 #replacing na to 0
 for (i in 1:10) {
     for (j in 1:ncol(data)) {
+      data[data == "None"] <- 0
         if(is.na(data[i,j]) || data[i,j]=="None"){
-         data[i,j] <- 0 
+        data[i,j] <- "0"
         }
-        }
+      }
 }
 
-
-##replace 10 with nrow(data)
+##replace 10 with nrow(data) later
 #converting categorical to numerical values
 uniqueVals = list()
 for (j in 1:ncol(data)) {
@@ -39,9 +46,6 @@ for (j in 1:ncol(data)) {
     
     for (i in 1:10) {
       for(w in 1:length(uniqueVals[[j]])) {
-        if(is.na(data[i,j])){
-         data[i,j] <- 0 
-        }
         if(data[i,j]==vars[w]){
           data[i,j]<- w
           break
@@ -60,7 +64,7 @@ for (j in 1:ncol(data)) {
 smp_size = floor(0.5 * nrow(data))
 train_Index = sample(seq_len(nrow(data)), size = smp_size)
 trainData <- data[train_Index, ]
-testData <- data[-train_Index, ] 
+testData <- data[-train_Index, ]  
 
 # data$Lot.Shape = factor(data$Lot.Shape, ordered = T) # ordinal
 # data$Utilities = factor(data$Utilities, ordered = T)
@@ -78,12 +82,9 @@ testData <- data[-train_Index, ]
 ```{r}
 library("factoextra")
 library("dplyr")
-contData <- trainData %>%
-        select(where(is.numeric))
 
-str(contData)
-dataM = as.matrix(contData)
-dataMat = as.matrix(dataM) %*% t(dataM)
+dataM = as.matrix(data[1:10,])
+dataMat = dataM %*% t(dataM)
 ## standardizing the data
 dataMat = scale(dataMat)
 mean(dataMat[, 1])
