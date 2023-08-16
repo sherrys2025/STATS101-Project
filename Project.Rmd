@@ -83,7 +83,7 @@ testData <- data[-train_Index, ]
 library("factoextra")
 library("dplyr")
 
-dataM = as.matrix(data[1:10,])
+dataM = data.matrix(data[1:10,])
 dataMat = dataM %*% t(dataM)
 ## standardizing the data
 dataMat = scale(dataMat)
