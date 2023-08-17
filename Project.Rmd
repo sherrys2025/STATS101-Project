@@ -11,17 +11,19 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 ```
 
 ##Data preprocessing
+
 ```{r}
 data <- read.csv("ames2000_NAfix.csv", stringsAsFactors = TRUE)
+data$MS.SubClass = factor(data$MS.SubClass)
 ```
 
-```{Ordinal Variable Transformation}
+```{r, label="Ordinal Variable Transformation"}
 Convert_ordinal <- function(dict, row) {
   data[, row] = as.character(data[, row])
   for (i in 1:2000) {
      data[i, row] = dict[data[i, row]]
   }
-  return (factor(data[, row])) # ordinal to their values
+  return (as.integer(data[, row])) # ordinal to their values
 }
 
 Lot.Shape.Order = c("IR3" = "1", "IR2" = "2", "IR1" = "3", "Reg" = "4")
@@ -30,8 +32,8 @@ data[, 7] <- Convert_ordinal(Lot.Shape.Order, 7)
 Land.Slope.Order = c("Sev" = "1", "Mod" = "2", "Gtl" = "3")
 data[, 11] <- Convert_ordinal(Land.Slope.Order, 11)
 
-data$Overall.Qual = factor(data$Overall.Qual)
-data$Overall.Cond = factor(data$Overall.Cond)
+# data$Overall.Qual = factor(data$Overall.Qual)
+# data$Overall.Cond = factor(data$Overall.Cond)
 
 Qual.Order = c("Po" = "1", "Fa" = "2", "TA" = "3", "Gd" = "4", "Ex" = "5")
 data[, 27] <- Convert_ordinal(Qual.Order, 27) # Exter.Qual to numerical order
@@ -68,7 +70,7 @@ Fence.Order = c("MnWw" = "1", "GdWo" = "2", "MnPrv" = "3", "GdPrv" = "4")
 data[, 73] <- Convert_ordinal(Fence.Order, 73) # Fence to numerical order
 ```
 
-```{Continuous transformation}
+```{r, title = Continuous transformation}
 # Bsmt.Full.Bath and the following variables should be factored or kept as numerical?
 
 data$Lot.Frontage = as.integer(data$Lot.Frontage)
@@ -82,21 +84,35 @@ data$Garage.Area = as.integer(data$Garage.Area)
 
 ```
 
+```{r}
+for (y in 1:ncol(data)) {
+  for (x in 1:nrow(data)) {
+    if (!is.na(data[x,y])){
+      if (as.character(data[x, y]) == "None") {
+        data[x, y] = NA
+      }
+    }
+  }
+}
+```
 
-```{Removing certain features}
+```{r, title = Removing certain features}
 # for (i in ordinal_index) {
 #   data[, i]
 # }
 sale_price <- data[, 80] # extracting sale price (y)
-data <- data[,-9] # removing utilities because it only has one type of value
-data <- data[,-79] # removing the sales price too
 
+to_remove = c(5, 6, 8, 9, 22, 39, 41, 42, 45, 52, 63, 64, 65, 68, 69, 70, 71, 72, 73, 74, 75)
+
+data <- data[,-to_remove] # removing the ones we don't want
+
+consider = c(2, 11, 13, 14, 35, 36, 47, 48, 49, 50, 55, 57)
 
 ```
 
-
 ##Splitting the data
-```{Splitting data}
+
+```{r, title = Splitting data}
 
 smp_size = floor(0.5 * nrow(data))
 train_Index = sample(seq_len(nrow(data)), size = smp_size)
@@ -106,14 +122,32 @@ trainData <- data[train_Index, ]
 testData <- data[-train_Index, ]  
 ```
 
+##Corrplot
 
-##Corrplot 
 ```{r}
-cont_index <- c(3, 4, 19, 20, 26, 34, 36, 37, 38, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 54, 56, 59, 61, 62, 66, 67, 68, 69, 70, 71, 75, 76, 77)
+require(corrplot)
+cont_index <- c()
+for (i in 1:ncol(trainData)) {
+  if (!is.factor(data[, i])) {
+    cont_index = c(cont_index, i)
+  }
+}
+
+for (y in cont_index) {
+  for (x in 1:length(trainData[, y])) {
+    if (is.na(trainData[x, y])){
+      trainData[x, y] = mean(trainData[, y], na.rm = TRUE)
+    }
+  }
+}
+
+correlation <- cor(trainData[cont_index])
+corrplot(correlation, method = "color")
 
 ```
 
 ## The Data
+
 ```{r}
 
 ```
