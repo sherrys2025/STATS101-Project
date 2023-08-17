@@ -142,7 +142,7 @@ for (y in cont_index) {
 }
 
 correlation <- cor(trainData[cont_index])
-corrplot(correlation, method = "color")
+corrplot(correlation, method = "color", tl.cex = 0.5)
 
 ```
 
