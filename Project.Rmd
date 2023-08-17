@@ -102,17 +102,17 @@ for (y in 1:ncol(data)) {
 # }
 sale_price <- data[, 80] # extracting sale price (y)
 
-to_remove = c(5, 6, 8, 9, 22, 39, 41, 42, 45, 52, 63, 64, 65, 68, 69, 70, 71, 72, 73, 74, 75)
+to_remove = c(5, 6, 8, 9, 11, 14, 22, 39, 41, 42, 45, 48, 52, 63, 64, 65, 68, 69, 70, 71, 72, 73, 74, 75)
 
 data <- data[,-to_remove] # removing the ones we don't want
 
-consider = c(2, 11, 13, 14, 35, 36, 47, 48, 49, 50, 55, 57)
+consider = c(2, 13, 35, 36, 47, 49, 50, 55, 57)
 
 ```
 
 ##Splitting the data
 
-```{r, title = Splitting data}
+```{r, label = Splitting data}
 
 smp_size = floor(0.5 * nrow(data))
 train_Index = sample(seq_len(nrow(data)), size = smp_size)
@@ -124,7 +124,7 @@ testData <- data[-train_Index, ]
 
 ##Corrplot
 
-```{r}
+```{r, label = Corrplot on cont. var}
 require(corrplot)
 cont_index <- c()
 for (i in 1:ncol(trainData)) {
@@ -146,8 +146,17 @@ corrplot(correlation, method = "color", tl.cex = 0.5)
 
 ```
 
-## The Data
+## Removing low correlation cont. var
 
 ```{r}
+
+remove = c()
+for(i in 1:(nrow(correlation)-1)){
+  if(abs(correlation[39,i]) < 0.3){ 
+    remove = c(remove, i)
+  }  
+}
+
+trainData = trainData[-cont_index[remove]]
 
 ```
