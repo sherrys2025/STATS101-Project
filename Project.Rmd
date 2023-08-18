@@ -149,14 +149,16 @@ corrplot(correlation, method = "color", tl.cex = 0.5)
 ## Removing low correlation cont. var
 
 ```{r}
-
-remove = c()
-for(i in 1:(nrow(correlation)-1)){
-  if(abs(correlation[39,i]) < 0.3){ 
-    remove = c(remove, i)
-  }  
+require('psych')
+corr_p = c()
+remove_p = c()
+for (i in cont_index[1:length(cont_index)-1]) {
+  corr_p = corr.test(trainSale, trainData[, i], method = "pearson", alpha = 0.05)
+  if (corr_p$p.adj > 0.05) {
+    remove_p = c(remove_p, i)
+  }
 }
 
-trainData = trainData[-cont_index[remove]]
+trainData = trainData[-remove_p]
 
 ```
