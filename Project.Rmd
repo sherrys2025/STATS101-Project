@@ -158,7 +158,7 @@ trainData = trainData[-remove_p]
 
 ##Evaluating spread for cat. features
 
-```{r, label = "Visualizing the spread of cat. var and removing some with reasoning mentioned on the write up}
+```{r, label = "Visualizing the spread of cat. var and removing some with reasoning mentioned on the write up"}
 
 factors = c()
 for(j in 1:ncol(trainData)){
