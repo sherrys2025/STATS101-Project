@@ -70,7 +70,7 @@ Fence.Order = c("MnWw" = "1", "GdWo" = "2", "MnPrv" = "3", "GdPrv" = "4")
 data[, 73] <- Convert_ordinal(Fence.Order, 73) # Fence to numerical order
 ```
 
-```{r, title = Continuous transformation}
+```{r, title = "Continuous transformation"}
 # Bsmt.Full.Bath and the following variables should be factored or kept as numerical?
 
 data$Lot.Frontage = as.integer(data$Lot.Frontage)
@@ -110,8 +110,6 @@ consider = c(2, 13, 35, 36, 47, 49, 50, 55, 57)
 ##Splitting the data
 
 ```{r, label = "Splitting data"}
-
-
 smp_size = floor(0.5 * nrow(data))
 train_Index = sample(seq_len(nrow(data)), size = smp_size)
 trainSale <- sale_price[train_Index]
@@ -144,21 +142,7 @@ corrplot(correlation, method = "color", tl.cex = 0.5)
 
 ```
 
-## Removing low correlation cont. var
-
-```{r}
-
-remove = c()
-for(i in 1:(nrow(correlation)-1)){
-  if(abs(correlation[39,i]) < 0.3){ 
-    remove = c(remove, i)
-  }
-}
-
-trainData = trainData[-cont_index[remove]]
-
-```
-
+## Removing insig. correlation cont. var
 
 ```{r, label = "Removing insignificant corr. by corr.test" }
 library('psych')
