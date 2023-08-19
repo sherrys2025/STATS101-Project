@@ -248,11 +248,26 @@ vif
 
 ##testing the model on the test dataset
 ```{r}
-#making sure they have the same amount of predictors, so predict() doesn't give NAs
+#making sure newTestData is formatted correctly, replacing nas with means of column
 newTestData = subset(testData, select = c(MS.SubClass, Lot.Frontage, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
-predictions <- predict(lm2, newdata = newTestData)
 
-##need to fill in NAs in newTestData with mean thing
+cont_index_test <- c()
+for (i in 1:ncol(newTestData)) {
+  if (!is.factor(newTestData[, i])) {
+    cont_index_test = c(cont_index_test, i)
+  }
+}
+
+for (y in cont_index_test) {
+  for (x in 1:length(newTestData[, y])) {
+    if (is.na(newTestData[x, y])){
+      newTestData[x, y] = mean(newTestData[, y], na.rm = TRUE)
+    }
+  }
+}
+
+
+predictions <- predict(lm2, newdata = newTestData)
 
 #calculating R^2
 actuals <- testData$SalePrice
