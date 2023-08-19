@@ -206,3 +206,42 @@ remove_con = c(2, 7, 8, 9, 10, 11, 16, 19, 23, 25, 26, 27, 28)
 trainData = trainData[-remove_con]
 
 ```
+
+##Initial linear model
+
+```{r, label = "initial linear model to further reduce features"}
+initial_lm <- lm(SalePrice ~ ., data = trainData)
+summary(initial_lm)
+
+```
+
+##Initial linear model
+
+```{r, label = "initial linear model to further reduce features"}
+
+newTrainData = subset(trainData, select = c(MS.SubClass, Lot.Frontage, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
+
+lm <- lm(SalePrice ~ ., data = newTrainData)
+summary(lm)
+
+```
+
+```{r, label = "Evaluating the model"}
+par(mfrow=c(2,2))
+plot(lm)
+
+#remove 1234 because it's all na
+newTrainData = newTrainData[-1234,]
+```
+
+```{r, label = "re-evaluating the model without observation 1234"}
+lm2 <- lm(SalePrice ~ ., data = newTrainData)
+summary(lm2)
+```
+
+```{r, label = "vif testing for collinearity"}
+library(car)
+vif = vif(lm2)
+vif
+
+```
