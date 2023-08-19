@@ -273,7 +273,7 @@ predictions <- predict(lm2, newdata = newTestData)
 actuals <- testData$SalePrice
 m_actuals <- mean(actuals)
 ss_total <- sum((actuals - m_actuals)^2)
-ss_residual <- sum((actuals - predictions)^2)
+ss_residual <- sum((actuals - predictions)^2, na.rm = TRUE)
 rsquared <- 1 - (ss_residual / ss_total)
 rsquared
 ```
