@@ -245,3 +245,20 @@ vif = vif(lm2)
 vif
 
 ```
+
+##testing the model on the test dataset
+```{r}
+#making sure they have the same amount of predictors, so predict() doesn't give NAs
+newTestData = subset(testData, select = c(MS.SubClass, Lot.Frontage, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
+predictions <- predict(lm2, newdata = newTestData)
+
+##need to fill in NAs in newTestData with mean thing
+
+#calculating R^2
+actuals <- testData$SalePrice
+m_actuals <- mean(actuals)
+ss_total <- sum((actuals - m_actuals)^2)
+ss_residual <- sum((actuals - predictions)^2)
+rsquared <- 1 - (ss_residual / ss_total)
+rsquared
+```
