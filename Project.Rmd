@@ -336,10 +336,12 @@ predictions_log <- predict(log_lm2, newdata = newTestData)
 
 
 #calculating R^2
-ss_residual <- sum((actuals - predictions_log)^2, na.rm = TRUE)
+actualsLG <- log(newTestData$SalePrice)
+m_actualsLG <- mean(actualsLG)
+ss_total <- sum((actualsLG - m_actualsLG)^2)
+ss_residual <- sum((actualsLG - predictions_log)^2, na.rm = TRUE)
 rsquared <- 1 - (ss_residual / ss_total)
 rsquared
-
 
 ```
 
