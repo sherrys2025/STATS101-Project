@@ -297,7 +297,6 @@ confint(lm2, level = 0.95)
 log_lm <- lm(log(SalePrice) ~ ., data = trainData)
 summary(log_lm)
 
-
 newTrainData = subset(data[train_Index, ], select = c(MS.SubClass, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
 
 log_lm2 <- lm(log(SalePrice) ~ ., data = newTrainData)
@@ -344,7 +343,61 @@ rsquared <- 1 - (ss_residual / ss_total)
 rsquared
 
 ```
+```{r, label = "linear model but with transformations - squared and squared root"}
+squared_lm <- lm((SalePrice)^2 ~ ., data = trainData)
+summary(squared_lm)
 
+sqrt_lm <- lm(sqrt(SalePrice) ~ ., data = trainData)
+summary(sqrt_lm)
+
+#train_Index = train_Index[- which(train_Index == 1208 | train_Index == 983)]
+
+newTrainData = subset(data[train_Index, ], select = c(MS.SubClass, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
+
+sqrt_lm2 <- lm(sqrt(SalePrice) ~ ., data = newTrainData)
+summary(sqrt_lm2)
+
+par(mfrow=c(2,2))
+plot(sqrt_lm)
+
+par(mfrow=c(2,2))
+plot(sqrt_lm2)
+
+MSE.log <- mean(log_lm2$residuals^2)
+print(MSE.log)
+MSE.linear <- mean(lm2$residuals^2)
+print(MSE.linear)
+
+#testing
+newTestData = subset(testData, select = c(MS.SubClass, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
+
+cont_index_test <- c()
+for (i in 1:ncol(newTestData)) {
+  if (!is.factor(newTestData[, i])) {
+    cont_index_test = c(cont_index_test, i)
+  }
+}
+
+for (y in cont_index_test) {
+  for (x in 1:length(newTestData[, y])) {
+    if (is.na(newTestData[x, y])){
+      newTestData[x, y] = mean(newTestData[, y], na.rm = TRUE)
+    }
+  }
+}
+
+predictions_sqrt <- predict(sqrt_lm2, newdata = newTestData)
+
+
+#calculating R^2
+actualsSQRT <- sqrt(newTestData$SalePrice)
+m_actualsSQRT <- mean(actualsSQRT)
+ss_total <- sum((actualsSQRT - m_actualsSQRT)^2)
+ss_residual <- sum((actualsSQRT - predictions_sqrt)^2, na.rm = TRUE)
+rsquared <- 1 - (ss_residual / ss_total)
+rsquared
+
+```
 
 ##Decision tree model
 ```{r}
