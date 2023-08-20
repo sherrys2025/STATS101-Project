@@ -419,8 +419,17 @@ text(pruneTrain, pretty = 0)
 
 ```
 
-##Calculating MSE for unpruned 
+##Calculating R^2 + MSE for unpruned 
 ```{r}
+#computing R^2
+actualsT <- treeTestData$SalePrice
+m_actuals <- mean(actualsT)
+ss_total <- sum((actualsT - m_actuals)^2)
+ss_residual <- sum((actualsT - predictionsTree)^2, na.rm = TRUE)
+rsquared <- 1 - (ss_residual / ss_total)
+rsquared
+
+
 #computing test mse
 yhat <- predict(trainTree, newdata = treeTestData[1:55])
 actualPrice <- treeTestData$SalePrice
@@ -435,10 +444,21 @@ print(rmse)
 
 ```
 
-##Calculating MSE for pruned 
+##Calculating R^2 + MSE for pruned 
 
 ```{r}
+
 yhat <- predict(pruneTrain, newdata = treeTestData[1:55])
+
+actualsTP <- treeTestData$SalePrice
+m_actuals <- mean(actualsTP)
+ss_total <- sum((actualsTP - m_actuals)^2)
+ss_residual <- sum((actualsTP - yhat)^2, na.rm = TRUE)
+rsquared <- 1 - (ss_residual / ss_total)
+rsquared
+
+
+
 test.prune <- treeTestData$SalePrice
 plot(yhat, test.prune)
 abline(0, 1)
