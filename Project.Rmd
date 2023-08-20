@@ -5,7 +5,7 @@ output:
   pdf_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup}
 set.seed(123)     #setting seed
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning = FALSE)
 ```
@@ -70,7 +70,7 @@ Fence.Order = c("MnWw" = "1", "GdWo" = "2", "MnPrv" = "3", "GdPrv" = "4")
 data[, 73] <- Convert_ordinal(Fence.Order, 73) # Fence to numerical order
 ```
 
-```{r, title = "Continuous transformation"}
+```{r, label = "Continuous transformation"}
 # Bsmt.Full.Bath and the following variables should be factored or kept as numerical?
 
 data$Lot.Frontage = as.integer(data$Lot.Frontage)
@@ -234,12 +234,16 @@ par(mfrow=c(2,2))
 plot(lm)
 
 #remove 1234 because it's all na
-newTrainData = newTrainData[-1234,]
+train_Index = train_Index[-which(train_Index == 1234 | train_Index == 581)]
+newTrainData = subset(data[train_Index, ], select = c(MS.SubClass, Lot.Frontage, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
 ```
 
 ```{r, label = "re-evaluating the model without observation 1234"}
 lm2 <- lm(SalePrice ~ ., data = newTrainData)
 summary(lm2)
+
+par(mfrow=c(2,2))
+plot(lm2)
 ```
 
 ```{r, label = "vif testing for collinearity"}
@@ -279,6 +283,8 @@ ss_total <- sum((actuals - m_actuals)^2)
 ss_residual <- sum((actuals - predictions)^2, na.rm = TRUE)
 rsquared <- 1 - (ss_residual / ss_total)
 rsquared
+
+
 ```
 ##confint for linear model
 
@@ -286,6 +292,57 @@ rsquared
 confint(lm2, level = 0.95)
 
 ```
+
+```{r, label = "linear model but with transformations - log"}
+log_lm <- lm(log(SalePrice) ~ ., data = trainData)
+summary(log_lm)
+
+
+newTrainData = subset(data[train_Index, ], select = c(MS.SubClass, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
+
+log_lm2 <- lm(log(SalePrice) ~ ., data = newTrainData)
+summary(log_lm2)
+
+par(mfrow=c(2,2))
+plot(log_lm)
+
+par(mfrow=c(2,2))
+plot(log_lm2)
+
+MSE.log <- mean(log_lm2$residuals^2)
+print(MSE.log)
+MSE.linear <- mean(lm2$residuals^2)
+print(MSE.linear)
+
+#testing
+newTestData = subset(testData, select = c(MS.SubClass, Exter.Qual, Bsmt.Qual, BsmtFin.Type.1, Fireplaces, Kitchen.Qual, TotRms.AbvGrd, Garage.Cars, Wood.Deck.SF, SalePrice))
+
+cont_index_test <- c()
+for (i in 1:ncol(newTestData)) {
+  if (!is.factor(newTestData[, i])) {
+    cont_index_test = c(cont_index_test, i)
+  }
+}
+
+for (y in cont_index_test) {
+  for (x in 1:length(newTestData[, y])) {
+    if (is.na(newTestData[x, y])){
+      newTestData[x, y] = mean(newTestData[, y], na.rm = TRUE)
+    }
+  }
+}
+
+predictions_log <- predict(log_lm2, newdata = newTestData)
+
+
+#calculating R^2
+ss_residual <- sum((actuals - predictions_log)^2, na.rm = TRUE)
+rsquared <- 1 - (ss_residual / ss_total)
+rsquared
+
+
+```
+
 
 ##Decision tree model
 ```{r}
