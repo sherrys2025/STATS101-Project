@@ -401,7 +401,7 @@ ss_residual <- sum((actualsSQRT - predictions_sqrt)^2, na.rm = TRUE)
 rsquared <- 1 - (ss_residual / ss_total)
 rsquared
 
-predInt3 = predict(sqrt_lm2, newdata = newtestData, interval = "predict")
+predInt3 = predict(sqrt_lm2, newdata = newTestData, interval = "predict")
 
 
 ```
@@ -484,11 +484,11 @@ predInt5 = predict(pruneTrain, newdata = treeTestData, interval = "predict")
 ```
 #Comparing prediction intervals between models
 ```{r}
-paste("Pred. int for lm model: ", predInt1[,1], "to", predInt1[,3])
-paste("Pred. int for log. lm model: ", predInt2[,1], "to", predInt2[,3])
-paste("Pred. int for sqrt. model: ", predInt3[,1], "to", predInt3[,3])
-paste("Pred. int for initial tree model: ", predInt4[,1], "to", predInt4[,3])
-paste("Pred. int for pruned tree model: ", predInt5[,1], "to", predInt5[,3])
+paste("Pred. int for lm model: ", mean(predInt1[,1]), "to", mean(predInt1[,3]))
+paste("Pred. int for log. lm model: ", mean(predInt2[,1]), "to", mean(predInt2[,3]))
+paste("Pred. int for sqrt. model: ", mean(predInt3[,1]), "to", mean(predInt3[,3]))
+paste("Pred. int for initial tree model: ", mean(predInt4[,1]), "to", mean(predInt4[,3]))
+paste("Pred. int for pruned tree model: ", mean(predInt5[,1]), "to", mean(predInt5[,3]))
 
 
 
