@@ -401,6 +401,7 @@ ss_residual <- sum((actualsSQRT - predictions_sqrt)^2, na.rm = TRUE)
 rsquared <- 1 - (ss_residual / ss_total)
 rsquared
 
+confint(sqrt_lm2, level = 0.95)
 predInt3 = predict(sqrt_lm2, newdata = newTestData, interval = "predict")
 
 
