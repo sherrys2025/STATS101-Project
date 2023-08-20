@@ -484,11 +484,9 @@ predInt5 = predict(pruneTrain, newdata = treeTestData, interval = "predict")
 ```
 #Comparing prediction intervals between models
 ```{r}
-paste("Pred. int for lm model: ", mean(predInt1[,1]), "to", mean(predInt1[,3]))
-paste("Pred. int for log. lm model: ", mean(predInt2[,1]), "to", mean(predInt2[,3]))
-paste("Pred. int for sqrt. model: ", mean(predInt3[,1]), "to", mean(predInt3[,3]))
-paste("Pred. int for initial tree model: ", mean(predInt4[,1]), "to", mean(predInt4[,3]))
-paste("Pred. int for pruned tree model: ", mean(predInt5[,1]), "to", mean(predInt5[,3]))
+paste("Pred. int for lm model: ", mean(predInt1[,1], na.rm = TRUE), "to", mean(predInt1[,3], na.rm = TRUE))
+paste("Pred. int for log. lm model: ", mean(predInt2[,1], na.rm = TRUE), "to", mean(predInt2[,3], na.rm = TRUE))
+paste("Pred. int for sqrt. model: ", mean(predInt3[,1], na.rm = TRUE), "to", mean(predInt3[,3], na.rm = TRUE))
 
 
 
