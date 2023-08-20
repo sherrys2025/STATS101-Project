@@ -286,10 +286,11 @@ rsquared
 
 
 ```
-##confint for linear model
+##confint and prediction interval for linear model
 
 ```{r}
 confint(lm2, level = 0.95)
+predInt1 = predict(lm2, newdata = newTestData, interval = "predict")
 
 ```
 
@@ -341,6 +342,9 @@ ss_total <- sum((actualsLG - m_actualsLG)^2)
 ss_residual <- sum((actualsLG - predictions_log)^2, na.rm = TRUE)
 rsquared <- 1 - (ss_residual / ss_total)
 rsquared
+
+predInt2= predict(log_lm2, newdata = newTestData, interval = "predict")
+
 
 ```
 ```{r, label = "linear model but with transformations - squared and squared root"}
@@ -397,6 +401,9 @@ ss_residual <- sum((actualsSQRT - predictions_sqrt)^2, na.rm = TRUE)
 rsquared <- 1 - (ss_residual / ss_total)
 rsquared
 
+predInt3 = predict(sqrt_lm2, newdata = newtestData, interval = "predict")
+
+
 ```
 
 ##Decision tree model
@@ -442,6 +449,9 @@ print(rmse)
 
 #this model leads to test predictions that are (on average) within approximately $58181.69$ of the true median home value for the census tract.
 
+predInt4 = predict(trainTree, newdata = treeTestData, interval = "predict")
+
+
 ```
 
 ##Calculating R^2 + MSE for pruned 
@@ -467,7 +477,21 @@ rmse.prune = sqrt(test.mse.prune)
 print(test.mse.prune)
 print(rmse.prune)
 
-#this model leads to test predictions that are (on average) within approximately $64058.58$ of the true median home value for the census tract. Pruning gets rid of noise-y things, so the performence is "worse" but more general.
+#this model leads to test predictions that are (on average) within approximately $64058.58$ of the true median home value for the census tract. Pruning gets rid of noise-y things, so the performance is "worse" but more general.
+
+predInt5 = predict(pruneTrain, newdata = treeTestData, interval = "predict")
+
+```
+#Comparing prediction intervals between models
+```{r}
+paste("Pred. int for lm model: ", predInt1[,1], "to", predInt1[,3])
+paste("Pred. int for log. lm model: ", predInt2[,1], "to", predInt2[,3])
+paste("Pred. int for sqrt. model: ", predInt3[,1], "to", predInt3[,3])
+paste("Pred. int for initial tree model: ", predInt4[,1], "to", predInt4[,3])
+paste("Pred. int for pruned tree model: ", predInt5[,1], "to", predInt5[,3])
+
+
+
 
 
 ```
